@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:backend": "cd backend && npm start",
+    "dev:backend": "cd backend && npm run dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0",

@@ -13,7 +13,7 @@ const app = express();
 connectDB();
 
 // Trust proxy for production
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV && process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
 }
 
