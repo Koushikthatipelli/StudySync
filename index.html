@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SyncStudy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide-static@0.278.0/dist/lucide.js" defer></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <header class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <span class="inline-flex items-center gap-3 text-2xl font-semibold text-white">
+            <span>SyncStudy</span>
+            <span class="rounded-2xl bg-slate-700 px-3 py-1 text-sm text-sky-300">🚀</span>
+          </span>
+          <p class="mt-2 max-w-2xl text-slate-400">Find your study flow, together. Create a profile, filter peers, and connect instantly.</p>
+        </div>
+        <button id="openModalButton" class="inline-flex items-center justify-center rounded-full bg-sky-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-300">
+          <span class="mr-2">+</span> Create Study Profile
+        </button>
+      </header>
+
+      <section class="mb-10 grid gap-6 lg:grid-cols-[1.5fr_0.9fr]">
+        <div class="rounded-3xl bg-slate-900/80 p-8 shadow-xl shadow-slate-950/30 ring-1 ring-slate-700/60">
+          <p class="text-sm uppercase tracking-[0.24em] text-sky-300">Study group directory</p>
+          <h1 class="mt-4 text-4xl font-semibold text-white sm:text-5xl">Find your study flow, together.</h1>
+          <p class="mt-4 max-w-2xl text-slate-400">Search by subject, style, or availability and connect with motivated classmates in seconds.</p>
+          <div class="mt-7 grid gap-4 sm:grid-cols-[1fr_auto]">
+            <label class="relative block">
+              <span class="sr-only">Search</span>
+              <input id="searchInput" type="search" placeholder="Search subjects, names, availability..." class="w-full rounded-3xl border border-slate-700 bg-slate-950/90 px-5 py-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30" />
+            </label>
+            <div class="hidden items-center gap-2 rounded-3xl bg-slate-900/90 px-5 py-4 text-sm text-slate-300 sm:flex">
+              <span class="text-slate-500">Profiles:</span>
+              <span id="countLabel" class="font-semibold text-white">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-3xl bg-slate-900/80 p-8 shadow-xl shadow-slate-950/30 ring-1 ring-slate-700/60">
+          <p class="text-sm uppercase tracking-[0.24em] text-sky-300">Filter quickly</p>
+          <div class="mt-6 grid gap-4">
+            <div>
+              <label class="mb-2 block text-sm font-medium text-slate-200">Subject</label>
+              <select id="subjectFilter" class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-200 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+                <option value="">All subjects</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-2 block text-sm font-medium text-slate-200">Study Style</label>
+              <select id="styleFilter" class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-200 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+                <option value="">All styles</option>
+                <option value="Quiet Focus">Quiet Focus</option>
+                <option value="Discussion & Quiz">Discussion & Quiz</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-2 block text-sm font-medium text-slate-200">Availability</label>
+              <select id="availabilityFilter" class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-200 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+                <option value="">All availability</option>
+                <option value="Weekdays">Weekdays</option>
+                <option value="Evenings">Evenings</option>
+                <option value="Weekends">Weekends</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="mb-6 flex flex-wrap items-center gap-3">
+          <span class="rounded-full bg-slate-900/80 px-4 py-2 text-sm text-slate-300 ring-1 ring-slate-700/70">Live directory</span>
+          <span class="rounded-full bg-slate-900/80 px-4 py-2 text-sm text-slate-300 ring-1 ring-slate-700/70">LocalStorage powered</span>
+        </div>
+
+        <div id="cardsGrid" class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"></div>
+      </section>
+    </div>
+
+    <div id="modalOverlay" class="invisible fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4 py-6 opacity-0 transition duration-300">
+      <div class="w-full max-w-2xl overflow-hidden rounded-[2rem] bg-slate-900 shadow-2xl shadow-slate-950/50 ring-1 ring-slate-700/80 transition-transform duration-300 transform scale-95">
+        <div class="flex items-center justify-between border-b border-slate-800 px-6 py-5">
+          <div>
+            <h2 class="text-2xl font-semibold text-white">Create Study Profile</h2>
+            <p class="mt-1 text-sm text-slate-400">Share your course, availability, and best study format.</p>
+          </div>
+          <button id="closeModalButton" class="rounded-full bg-slate-800 px-3 py-2 text-slate-300 transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500/40">✕</button>
+        </div>
+        <form id="profileForm" class="space-y-5 px-6 py-7">
+          <div>
+            <label class="mb-2 block text-sm font-medium text-slate-200">Your Name</label>
+            <input id="nameInput" type="text" placeholder="E.g. Aisha" required class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-medium text-slate-200">Subject / Course Code</label>
+            <input id="subjectInput" type="text" placeholder="E.g. CS101: Algorithms" required class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-medium text-slate-200">Availability Window</label>
+            <select id="availabilityInput" required class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+              <option value="">Select availability</option>
+              <option value="Weekdays">Weekdays</option>
+              <option value="Evenings">Evenings</option>
+              <option value="Weekends">Weekends</option>
+              <option value="Flexible">Flexible</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-medium text-slate-200">Study Style</label>
+            <div class="grid gap-3 sm:grid-cols-2">
+              <label class="rounded-3xl border border-slate-700 bg-slate-950/90 px-4 py-4 cursor-pointer text-sm text-slate-200 transition hover:border-sky-500">
+                <input type="radio" name="studyStyle" value="Quiet Focus" required class="mr-3 inline-block align-middle" />Quiet Focus
+              </label>
+              <label class="rounded-3xl border border-slate-700 bg-slate-950/90 px-4 py-4 cursor-pointer text-sm text-slate-200 transition hover:border-sky-500">
+                <input type="radio" name="studyStyle" value="Discussion & Quiz" class="mr-3 inline-block align-middle" />Discussion & Quiz
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-medium text-slate-200">Contact / Collaboration Link</label>
+            <input id="contactInput" type="text" placeholder="Discord, email, or Google Meet link" class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30" />
+          </div>
+          <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <button type="button" id="cancelFormButton" class="rounded-full border border-slate-700 bg-slate-900 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-800">Cancel</button>
+            <button type="submit" class="rounded-full bg-sky-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400">Publish Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
